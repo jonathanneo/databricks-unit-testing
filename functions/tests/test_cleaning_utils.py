@@ -1,4 +1,3 @@
-from pyspark.sql import DataFrame, functions as F
 from pyspark.sql import Row, SparkSession
 import pandas as pd
 from datetime import datetime
@@ -112,6 +111,5 @@ def test_add_metadata():
         "task_id": [1, 1],
         "ingested_at": [now, now]
     })
-
     # ASSERT 
     pd.testing.assert_frame_equal(left=expected_output_df,right=output_df_as_pd, check_exact=True, check_dtype=False)
