@@ -52,7 +52,7 @@ Databricks connect allows you to run PySpark code on your local machine on a Dat
 
 To configure the connection, run: 
 
-```bash
+```
 databricks-connect configure
 ```
 
@@ -80,7 +80,7 @@ For example:
 
 Validate that you are able to achieve Databricks Connect connectivity from your local machine by running: 
 
-```bash
+```
 databricks-connect test
 ```
 
@@ -172,7 +172,7 @@ The test above does 3 things:
 3. **Assert**: Check that the data returned matches our expectation after the transformation. The result should be a pass/fail.
 
 When developing your tests, you may wish to run your test_.py file to validate that the code can be executed. You can do so by doing: 
-```bash
+```
 python -m functions.tests.test_cleaning_utils
 ```
 
@@ -185,12 +185,12 @@ The benefit of using PyTest is that the results of our testing can be exported i
 <summary><strong>Running tests</strong></summary>
 To run all tests in the functions folder, run: 
 
-```bash
+```
 pytest functions
 ```
 
 You should see the following output: 
-```bash
+```
 ======= test session starts =======
 collected 3 items   
 functions/tests/test_cleaning_utils.py ...   [100%]
