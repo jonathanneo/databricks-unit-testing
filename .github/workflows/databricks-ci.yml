@@ -4,6 +4,7 @@ jobs:
   run-databricks-ci: 
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - run: python -V
       - run: pip install virtualenv
       - run: virtualenv venv
