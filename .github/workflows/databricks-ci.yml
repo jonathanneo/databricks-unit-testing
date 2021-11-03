@@ -12,16 +12,16 @@ jobs:
       - run: pip install -r requirements.txt
       - run: |
           echo "
-          $DATABRICKS_HOST
-          $DATABRICKS_TOKEN
-          $DATABRICKS_CLUSTER_ID
-          $DATABRICKS_WORKSPACE_ORG_ID
+          ${{ secrets.DATABRICKS_HOST }}
+          ${{ secrets.DATABRICKS_TOKEN }}
+          ${{ secrets.DATABRICKS_CLUSTER_ID }}
+          ${{ secrets.DATABRICKS_WORKSPACE_ORG_ID }}
           "
       - run: |
           echo "y
-          $DATABRICKS_HOST
-          $DATABRICKS_TOKEN
-          $DATABRICKS_CLUSTER_ID
-          $DATABRICKS_WORKSPACE_ORG_ID
+          ${{ secrets.DATABRICKS_HOST }}
+          ${{ secrets.DATABRICKS_TOKEN }}
+          ${{ secrets.DATABRICKS_CLUSTER_ID }}
+          ${{ secrets.DATABRICKS_WORKSPACE_ORG_ID }}
           15001" | databricks-connect configure
       - run: pytest functions --junitxml=unit-testresults.xml
