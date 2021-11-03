@@ -24,4 +24,4 @@ jobs:
           $DATABRICKS_CLUSTER_ID
           $DATABRICKS_WORKSPACE_ORG_ID
           15001" | databricks-connect configure
-      - pytest functions --junitxml=unit-testresults.xml
+      - run: pytest functions --junitxml=unit-testresults.xml
