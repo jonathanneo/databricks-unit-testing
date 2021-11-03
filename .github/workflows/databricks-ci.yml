@@ -1,0 +1,11 @@
+name: Databricks CI
+on: [push]
+jobs: 
+  run-databricks-ci: 
+    runs-on: ubuntu-latest
+    steps:
+      - run: python -V
+      - run: pip install virtualenv
+      - run: virtualenv venv
+      - run: source venv/bin/activate
+      - run: pip install -r requirements.txt
