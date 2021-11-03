@@ -11,13 +11,6 @@ jobs:
       - run: source venv/bin/activate
       - run: pip install -r requirements.txt
       - run: |
-          echo "
-          ${{ secrets.DATABRICKS_HOST }}
-          ${{ secrets.DATABRICKS_TOKEN }}
-          ${{ secrets.DATABRICKS_CLUSTER_ID }}
-          ${{ secrets.DATABRICKS_WORKSPACE_ORG_ID }}
-          "
-      - run: |
           echo "y
           ${{ secrets.DATABRICKS_HOST }}
           ${{ secrets.DATABRICKS_TOKEN }}
@@ -25,3 +18,8 @@ jobs:
           ${{ secrets.DATABRICKS_WORKSPACE_ORG_ID }}
           15001" | databricks-connect configure
       - run: pytest functions --junitxml=unit-testresults.xml
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        if: always()
+        with:
+          files: unit-testresults.xml
