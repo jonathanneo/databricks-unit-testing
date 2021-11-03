@@ -198,3 +198,140 @@ functions/tests/test_cleaning_utils.py ...   [100%]
 ```
 </details>
 
+# Continuous Integration (CI)
+
+<details>
+<summary><strong>GitHub Actions</strong></summary>
+
+To configure GitHub Actions CI pipelines, follow the steps below: 
+
+<strong>Step 1: Create .github folder</strong>
+
+At the root of your repository, create the following folders: `.github/workflows` 
+
+GitHub Actions will look for any `.yml` files stored in `.github/workflows`.
+
+<strong>Step 2: Create your secrets</strong>
+
+Create the following secrets with the same values you used to run the tests locally. 
+
+- `DATABRICKS_HOST`
+- `DATABRICKS_TOKEN`
+- `DATABRICKS_CLUSTER_ID`
+- `DATABRICKS_WORKSPACE_ORG_ID`
+
+![github-action-secrets](resources/images/github-action-secrets.png)
+
+For more information about how to create secrets, see: https://docs.github.com/en/actions/security-guides/encrypted-secrets
+
+
+<strong>Step 3: Create your yml file</strong>
+
+Create a new .yml file with a name of your choice e.g. `databricks-ci.yml` inside of the `.github/workflows` folder. 
+
+Below is sample code for a working unit test pipeline with published test results. 
+
+```yml
+name: Databricks CI
+on: [push, pull_request]
+jobs: 
+  run-databricks-ci: 
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: python -V
+      - run: pip install virtualenv
+      - run: virtualenv venv
+      - run: source venv/bin/activate
+      - run: pip install -r requirements.txt
+      - run: |
+          echo "y
+          ${{ secrets.DATABRICKS_HOST }}
+          ${{ secrets.DATABRICKS_TOKEN }}
+          ${{ secrets.DATABRICKS_CLUSTER_ID }}
+          ${{ secrets.DATABRICKS_WORKSPACE_ORG_ID }}
+          15001" | databricks-connect configure
+      - run: pytest functions --junitxml=unit-testresults.xml
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        if: always()
+        with:
+          files: unit-testresults.xml
+```
+
+YML explained: 
+
+```yml
+name: Databricks CI
+on: [push, pull_request]
+```
+
+The `name` key allows you to specify the name of your pipeline e.g. `Databricks CI`. 
+
+The `on` key defines what triggers will kickoff the pipeline e.g. `[push, pull_request]`
+
+```yml
+jobs: 
+  run-databricks-ci: 
+    runs-on: ubuntu-latest
+```
+
+`jobs` defines a job which contains multiple steps. 
+
+The job runs on `ubuntu-latest` which comes pre-installed with tools such as python. For details on python version and what other tools are pre-installed, see: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#preinstalled-software
+
+
+```yml
+steps:
+    - uses: actions/checkout@v2
+    - run: python -V
+    - run: pip install virtualenv
+    - run: virtualenv venv
+    - run: source venv/bin/activate
+    - run: pip install -r requirements.txt
+
+```
+
+`- uses: actions/checkout@v2` checks out the repository onto the runner. 
+
+`- run: python -V` checks the python version installed 
+
+`- run: pip install virtualenv` installs the virtual environment library 
+
+`- run: virtualenv venv` creates a virtual environment with the name `venv` 
+
+`- run: source venv/bin/activate` activates the newly created virtual environment 
+
+`- run: pip install -r requirements.txt` installs dependencies specified in the `requirements.txt` file
+
+```yml
+- run: |
+    echo "y
+    ${{ secrets.DATABRICKS_HOST }}
+    ${{ secrets.DATABRICKS_TOKEN }}
+    ${{ secrets.DATABRICKS_CLUSTER_ID }}
+    ${{ secrets.DATABRICKS_WORKSPACE_ORG_ID }}
+    15001" | databricks-connect configure
+```
+
+`echo "<stuff in here>" | databricks-connect configure` invokes the `databricks-connect configure` command and passes the secrets into it. 
+
+```yml
+- run: pytest functions --junitxml=unit-testresults.xml
+```
+
+The above runs the `pytest` module on the `functions` folder, and outputs the results using the `junitxml` format to a filepath that we specify e.g. `unit-testresults.xml`. 
+
+
+```yml
+- name: Publish Unit Test Results
+    uses: EnricoMi/publish-unit-test-result-action@v1
+    if: always()
+    with:
+        files: unit-testresults.xml
+```
+
+The above publishes the `unit-testresults.xml` by using a third-party action called `EnricoMi/publish-unit-test-result-action@v1`. 
+
+
+</details>
