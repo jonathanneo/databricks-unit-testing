@@ -1,5 +1,5 @@
 name: Databricks CI
-on: [push]
+on: [push, pull_request]
 jobs: 
   run-databricks-ci: 
     runs-on: ubuntu-latest
